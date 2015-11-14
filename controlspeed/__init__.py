@@ -28,19 +28,29 @@ class ControlSpeed(object):
     def __enter__(self):
         if len(self.calls) >= self.max_calls:
             until = time.time() + self.period - self._timespan
+            last = self._timespan
+            if last >= self.period:
+                until = 0
+            else:
+                until = self.period - last
             if self.callback:
                 t = threading.Thread(target=self.callback, args=(until,))
                 t.daemon = True
                 t.start()
-            time.sleep(until - time.time())
+            time.sleep(until)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.calls.append(time.time())
-
-        while self._timespan >= self.period:
+        #beyond period,pop deque
+        while len(self.calls) > self.max_calls:
             self.calls.popleft()
 
     @property
     def _timespan(self):
         return self.calls[-1] - self.calls[0]
+
+    @property
+    def _lastpoint(self):
+        return time.time() - self.calls[-1]
+

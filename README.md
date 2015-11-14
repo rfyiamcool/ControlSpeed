@@ -7,8 +7,8 @@
 ```
 from controlspeed import ControlSpeed
 @ControlSpeed(max_calls=10, period=1.0)
-    def do_something():
-        pass
+def do_something():
+    pass
 ```
 
 with关键词控制上下文
