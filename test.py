@@ -1,6 +1,19 @@
 #coding:utf-8
 import time
+import redis
 from controlspeed import ControlSpeed
+from controlspeed import ControlSpeedNetwork
+
+redis_conn = redis.StrictRedis()
+key = 'xiaorui.cc'
+
+@ControlSpeedNetwork(redis_conn, key, max_calls=10, period=3.0)
+def do_something(args):
+    time.sleep(0.1)
+    print args
+
+for i in xrange(20):
+    do_something(i)
 
 @ControlSpeed(max_calls=10, period=3.0)
 def do_something(args):
