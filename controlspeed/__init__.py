@@ -6,13 +6,16 @@ import time
 
 class ControlSpeed(object):
 
-    def __init__(self, max_calls, period=1.0, callback=None):
+    def __init__(self,multi=None, max_calls=0, period=1.0, callback=None):
         if period <= 0:
             raise ValueError('Speed limiting period must be > 0')
         if max_calls <= 0:
             raise ValueError('Speed limiting number of calls must be > 0')
 
-        self.calls = collections.deque()
+        if multi:
+            self.calls = multi
+        else:
+            self.calls = collections.deque()
 
         self.period = period
         self.max_calls = max_calls
@@ -56,7 +59,7 @@ class ControlSpeed(object):
 
 class ControlSpeedNetwork(object):
 
-    def __init__(self,redis_conn, key, max_calls, period=1.0, callback=None):
+    def __init__(self,redis_conn, key, max_calls=0, period=1.0, callback=None):
         if period <= 0:
             raise ValueError('Speed limiting period must be > 0')
         if max_calls <= 0:
