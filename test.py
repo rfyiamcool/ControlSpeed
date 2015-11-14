@@ -9,16 +9,16 @@ key = 'xiaorui.cc'
 
 @ControlSpeedNetwork(redis_conn, key, max_calls=10, period=3.0)
 def do_something(args):
-    time.sleep(0.1)
     print args
+    time.sleep(0.1)
 
 for i in xrange(20):
     do_something(i)
 
 @ControlSpeed(max_calls=10, period=3.0)
 def do_something(args):
-    time.sleep(0.1)
     print args
+    time.sleep(0.1)
 
 for i in xrange(20):
     do_something(i)

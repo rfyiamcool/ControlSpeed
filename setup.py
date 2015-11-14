@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
         name = "controlspeed",
-        version = "1.0",
+        version = "2.0",
         author = "ruifengyun",
         author_email = "rfyiamcool@163.com",
         description = "Control function call speed ,support network mode by redis",
@@ -17,7 +17,7 @@ setup(
         long_description = read('README.md'),
         install_requires=['redis'],
         classifiers = [
-             'Development Status :: 2 - Pre-Alpha',
+             'Development Status :: 4 - Beta',
              'Intended Audience :: Developers',
              'License :: OSI Approved :: MIT License',
              'Programming Language :: Python :: 2.7',
