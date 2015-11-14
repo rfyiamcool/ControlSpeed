@@ -3,7 +3,6 @@ import collections
 import functools
 import threading
 import time
-import redis
 
 class ControlSpeed(object):
 
