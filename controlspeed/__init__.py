@@ -33,7 +33,7 @@ class ControlSpeed(object):
         return wrapped
 
     def __enter__(self):
-        self.load()
+        self.judge_load()
         if len(self.calls) >= self.max_calls:
             until = time.time() + self.period - self._timespan
             last = self._timespan
@@ -50,12 +50,10 @@ class ControlSpeed(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.calls.append(time.time())
-        if self.multi:
-            self.dump(self.calls)
+        self.judge_dump()
         while len(self.calls) > self.max_calls:
             self.calls.popleft()
-            if self.multi:
-                self.dump(self.calls)
+            self.judge_dump()
 
     @property
     def _timespan(self):
@@ -63,9 +61,18 @@ class ControlSpeed(object):
             self.load()
         return self.calls[-1] - self.calls[0]
 
-    def dump(self,obj):
+    #will add more mode, threading
+    def judge_dump():
+        if self.multi:
+            self.dump()
+
+    def judge_load():
+        if self.multi:
+            self.load()
+                
+    def dump(self):
         with LockFile(self.lock, wait = True):
-            pickle.dump(obj, open(self.filename, "w"))
+            pickle.dump(self.calls, open(self.filename, "w"))
     
     def load(self):
         with LockFile(self.lock, wait = True):
