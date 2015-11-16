@@ -3,6 +3,9 @@ import collections
 import functools
 import threading
 import time
+import pickle
+from local_mutex import LocalMutex, LockError
+
 
 class ControlSpeed(object):
 
@@ -11,11 +14,12 @@ class ControlSpeed(object):
             raise ValueError('Speed limiting period must be > 0')
         if max_calls <= 0:
             raise ValueError('Speed limiting number of calls must be > 0')
+        self.multi = multi
+        if self.multi:
+            self.filename = 'tmp.file'
+            self.lock = 'lock.file'
 
-        if multi:
-            self.calls = multi
-        else:
-            self.calls = collections.deque()
+        self.calls = collections.deque()
 
         self.period = period
         self.max_calls = max_calls
@@ -29,6 +33,7 @@ class ControlSpeed(object):
         return wrapped
 
     def __enter__(self):
+        self.load()
         if len(self.calls) >= self.max_calls:
             until = time.time() + self.period - self._timespan
             last = self._timespan
@@ -45,17 +50,27 @@ class ControlSpeed(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.calls.append(time.time())
-        #beyond period,pop deque
+        if self.multi:
+            self.dump(self.calls)
         while len(self.calls) > self.max_calls:
             self.calls.popleft()
+            if self.multi:
+                self.dump(self.calls)
 
     @property
     def _timespan(self):
+        if self.multi:
+            self.load()
         return self.calls[-1] - self.calls[0]
 
-    @property
-    def _lastpoint(self):
-        return time.time() - self.calls[-1]
+    def dump(self,obj):
+        with LockFile(self.lock, wait = True):
+            pickle.dump(obj, open(self.filename, "w"))
+    
+    def load(self):
+        with LockFile(self.lock, wait = True):
+            res = pickle.load(open(self.filename, "r"))
+            self.calls = res
 
 class ControlSpeedNetwork(object):
 
