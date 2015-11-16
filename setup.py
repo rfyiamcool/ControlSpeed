@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
         name = "controlspeed",
-        version = "2.2",
+        version = "2.3",
         author = "ruifengyun",
         author_email = "rfyiamcool@163.com",
         description = "Control function call speed ,support network mode by redis",

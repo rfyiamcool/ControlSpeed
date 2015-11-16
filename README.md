@@ -2,7 +2,11 @@
 这项目是用来控制函数调用的频率, 不仅支持本地的同步线程模式, 而且支持分布式模式.   
 [更多开发描述,请点击链接](http://xiaorui.cc)
 
-ControlSpeed(本地版)还不兼容多进程多线程的场景, 当然你可以用ControlSpeedNetwork分布式版解决. 缺点是每次访问都会有一次网络io消耗.
+ControlSpeed(本地版)还不兼容多线程的场景, 当然你可以用ControlSpeedNetwork分布式版解决. 缺点是每次访问都会有一次网络io消耗.  
+
+version 2.3:  
+1. Add multiprocessing mode support
+
 #Usage:
 
 装饰器使用方法
