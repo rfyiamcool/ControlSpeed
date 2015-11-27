@@ -60,22 +60,21 @@ class ControlSpeed(object):
         if self.multi:
             self.load()
         return self.calls[-1] - self.calls[0]
-
     #will add more mode, threading
-    def judge_dump():
+    def judge_dump(self):
         if self.multi:
             self.dump()
 
-    def judge_load():
+    def judge_load(self):
         if self.multi:
             self.load()
                 
     def dump(self):
-        with LockFile(self.lock, wait = True):
+        with LocalMutex(self.lock, wait = True):
             pickle.dump(self.calls, open(self.filename, "w"))
     
     def load(self):
-        with LockFile(self.lock, wait = True):
+        with LocalMutex(self.lock, wait = True):
             res = pickle.load(open(self.filename, "r"))
             self.calls = res
 

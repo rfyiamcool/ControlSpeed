@@ -2,15 +2,12 @@ import errno
 import fcntl
 import os
 
-
 class LockError(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
 
-
     def __repr__(self):
         return self.__class__.__name__ + '(' + repr(self.args[0]) + ')'
-
 
 class LocalMutex(object):
     def __init__(self, path, wait = False, remove = True):
@@ -48,19 +45,16 @@ class LocalMutex(object):
                         and stat1.st_ino == stat2.st_ino:
 
                         self._fd = fd
-
             finally:
                 # Close the file if it is not the required one
                 if self._fd is None:
                     os.close(fd)
-
 
     def __enter__(self):
         if self._fd is None:
             raise ValueError('The lock file is released')
 
         return self
-
 
     def __repr__(self):
         repr_str = '<'
@@ -72,20 +66,17 @@ class LocalMutex(object):
         repr_str += ' lock file ' + repr(self._path) + '>'
         return repr_str
 
-
     def get_path(self):
         if self._fd is None:
             raise ValueError('The lock file is released')
 
         return self._path
 
-
     def fileno(self):
         if self._fd is None:
             raise ValueError('The lock file is released')
 
         return self._fd
-
 
     def release(self):
         if self._fd is None:
@@ -99,7 +90,6 @@ class LocalMutex(object):
                 os.close(self._fd)
             finally:
                 self._fd = None
-
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.release()
